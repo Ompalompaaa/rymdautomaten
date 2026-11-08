@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rymdatomaten</title>
+<style>
+    :root{
+      --bakgrund: #0b0a1f;
+      --panel: #1b1740;
+      --neon: #b98cff;
+      --neon2: #6ee7f9;
+    }
+
+* { box-sizing: border-box; }
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background:
+        radial-gradient(ellipse at 20% 10%, #2a1b5e 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 90%, #123a5c 0%, transparent 55%),
+        var(--bakgrund);
+    font-family: "Trebuchet MS", system-ui, sans-serif;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* stjärnor */
+.stjärna {
+    position: fixed;
+    background: #fff;
+    border-radius: 50%;
+    opacity: .7;
+    animation: twinkle 3s infinite ease-in-out;
+}
+@keyframes twinkle {
+    0%, 100% { opacity: .2; transform: scale(.8);}
+    50%  {opacity: .9; transform: scale(1.2);}
+}
+
+.scen{
+    position:relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    z-index: 2;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--neon2);
+    text-shadow: 0 0 12 rgba(110, 231, 249, .6);
+}
+
+/* automaten */
+.automat {
+  position: relative;
+  width: 260px;
+  height: 380px;
+  border-radius: 28px;
+  background: linear-gradient(160deg, #3a2a72, #1b1740 60%, #120f2c);
+  border: 2px solid rgba(185, 140, 255, .5);
+  box-shadow:
+  0 0 40px rgba(185, 140, 255, .35), 
+  inset 0 0 40px rgba(0, 0, 0, .6);
+  cursor: pointer;
+  transition: transform .15 ease, box-shadow .3s ease;
+}
+.automat:hover { box-shadow: 0 0 60px rgba(185, 140, 255, .6), inset 0 0 40px rgba(0, 0, 0, .6); }
+.automat:active { transform: scale(.98); }
+
+/* glasfönstret med planeter */
+.fonster {
+position: absolute;
+inset: 22px 22px 130px 22px;
+border-radius: 18px;
+background: linear-gradient(180deg, rgba(110, 231, 249, .12), rgba(185, 140, 255,.08));
+border: 1px solid rgba(185, 140, 255, .35);
+overflow:hidden;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+padding: 14px;
+align-content: start;
+}
+
+.mini-planet { 
+    aspect-ratio: 1;
+    border-radius: 50%;
+    animation: sväva 4s infinite ease-in-out;
+    box-shadow: inset -6px -6px 12px rgba(0, 0, 0, .5);
+}
+@keyframes sväva {
+    0%, 100% { transform: translateY(0);}
+    50%  {transform: translateY(-6px);}
+}
+
+/*luckan där planeten kommer ut*/
+.lucka {
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    bottom: 26px;
+    height: 88px;
+    border-radius: 14px;
+    background: #07061a;
+    border: 2px solid rgba(110, 231, 249, .35);
+    box-shadow: inset 0 8px 20px rgba(0, 0, 0, .9);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    }
+    .lucka::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent, rgba(110, 231, 249, .08));
+        pointer-events: none;
+    }
+
+    .knapp-rad {
+        position: absolute;
+        left: 0; right: 0;
+        bottom: 124px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+    .knapp{
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        background: var(--neon);
+        box-shadow: 0 0 10px var(--neon);
+        animation: blink 2.4s infinite;
+    }
+    .knapp:nth-child(2) { animation-delay: .4s; background: var(--neon2); box-shadow: 0 0 10px var(--neon2);}
+    .knapp:nth-child(3) { animation-delay: .8s;}
+    @keyframes blink {0%, 100% { opacity: .3;} 50% { opacity: 1;}}
+
+    /*planeten som kommer ut */
+    .planet {
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: inset -8px -8px 16px rgba(0, 0, 0, .55), 0 0 24px rgba(255,255,255,.25);
+        animation: rulla-ut .7s cubic-bezier(.2, .9, .3, 1.2) forwards;
+        position: relative;
+    }
+    @keyframes rulla-ut {
+        0% { transform: translateY(-90px) scale(.6); opacity: 0;}
+        70% { transform: translateY(6px) scale(1.05); opacity: 1;}
+        100% { transform: translateY(0) scale(1); opacity: 1;}
+         }
+        
+    .planet:hover { filter: brightness(1.2);}
+
+    /*meddelandet*/
+    .meddelande {
+        max-width: 340px;
+        min-height: 62px;
+        padding: 16px 20px;
+        border-radius: 18px;
+        background: rgba(27, 23, 64, .85);
+        border: 1px solid rgba(185, 140, 255, .4);
+        backdrop-filter: blur(6px);
+        text-align: center;
+        font-size: 1rem;
+        line-height: 1.5;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity .4s ease, transform .4s ease;
+   } 
+.meddelande.syns { opacity: 1; transform: translateY(0);}
+
+.tips{ 
+    font-size: .8rem;
+    opacity: .5;
+    letter-spacing: .04em;
+}
+</style>
+</head>
+<body>
+
+<div class="scen">
+    <h1>Rymdatomaten</h1>
+
+    <div class="automat" id="automat" title="Klicka på automaten">
+        <div class="fonster" id="fonster"></div>
+        <div class="knapp-rad">
+            <span class="knapp"></span>
+            <span class="knapp"></span>
+            <span class="knapp"></span>
+        </div>
+        <div class="lucka" id="lucka"></div>
+    </div>
+
+    <div class="meddelande" id="meddelande">Klicka på automaten för att få en planet</div>
+    <div class="tips"...och Klicka sedan på planeten</div>
+</div>
+
+
+<script>
+    /*--------Dina meddelanden--------*/
+    const meddelanden = [
+        "meow"
+
+    ];
+
+    /* ------planeter: färger och storlek------ */
+    const planeter = [
+        { färg: "#f4a261", ring: true},
+        { färg: "#6ee7f9"},
+        { färg: "#b98cff"},
+        { färg: "#ff8fab"},
+        { färg: "#8ee99a"},
+        { färg: "#ffd166"},
+        { färg: "#7aa2ff"},
+        { färg: "#e0aaff"},
+    ];
+
+const automat = document.getElementById("automat");
+const lucka = document.getElementById("lucka");
+const meddelande = document.getElementById("meddelande");
+const fonster = document.getElementById("fonster");
+
+let aktiv = false; //förhindra spamklick medan planeten är ute
+
+/*-------stjärnbakgrund-------*/
+for (let i = 0; i <120; i++){
+    const s = document.createElement("div");
+    s.className = "stjärna";
+    const storlek = Math.random() * 2 + 1;
+    s.style.width = storlek + "px";
+    s.style.height = storlek + "px";
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.top = Math.random() * 100 + "vh";
+    s.style.animationDelay = Math.random() * 3 + "s";
+    document.body.appendChild(s);
+}
+
+/*-----planeter i glasfönstret (dekor)-----*/
+planeter.forEach((p, i) => {
+    const d = document.createElement("div");
+    d.className = "mini-planet";
+    d.style.background = `radial-gradient(circle at 32% 20%, #ffffff55, ${p.färg} 45%, #00000088)`;
+    d.style.animationDelay = (i * 0.3) + "s";
+    fonster.appendChild(d);
+});
+
+/*------klick på automaten------*/
+automat.addEventListener("click", () => {
+    if (aktiv) return; //om planeten är ute, gör inget
+    aktiv = true;
+
+// slumpa planet och meddelande
+const p = planeter[Math.floor(Math.random() * planeter.length)];
+const text = meddelanden[Math.floor(Math.random() * meddelanden.length)];
+
+// skapa planeten
+const planet = document.createElement("div");
+planet.className = "planet";
+planet.style.background = `radial-gradient(circle at 32% 28%, #ffffffcc, ${p.färg} 45%, #00000099)`;
+
+// liten ring runt vissa planeter 
+if (p.ring){
+    planet.style.boxShadow = 
+    "inset -8px -8px 16px rgba(0, 0, 0, .55), 0 0 0 6px rgba(255, 255,255,.12), 0 0 24px rgba(255, 255, 255, .3)";
+}
+
+lucka.innerHTML ="";
+lucka.appendChild(planet);
+
+// dölj meddelandet tills man klickar på planeten
+meddelande.classList.remove("syns");
+meddelande.textContent = "";
+
+// klick på planeten
+planet.addEventListener("click", (e)=>{
+    e.stopPropagation(); //så att atomatens klick inte triggas
+    meddelande.textContent = text;
+    meddelande.classList.add("syns");
+
+// liten poff och sedan bort
+planet.style.transition ="transform .5s ease, opacity .5s ease";
+planet.style.transform = "scale(1.4)"; 
+planet.style.opacity = "0";
+
+setTimeout(() => {
+    planet.remove();
+    aktiv = false;    
+}, 500);
+});
+ });
+</script>
+</body> 
+</html> 
